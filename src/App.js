@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import { ThemeProvider } from "styled-components";
+
+import Header from "./component/Header";
+import Navigation from "./component/Navigation";
+import News from "./component/Pages/News";
+import New from "./component/Pages/New";
+import Popups from "./component/Pop-ups";
+
+import { initialState, Context, appReducer } from "./data/store";
+import { LightTheme, DarkTheme } from "./styles/Themes";
+import GlobalStyle from "./styles/Global";
 
 function App() {
+  const [store, dispatch] = useReducer(appReducer, initialState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Context.Provider value={{ store, dispatch }}>
+        <ThemeProvider theme={LightTheme}>
+          <div className="App">
+            <GlobalStyle />
+            <Header />
+            <Switch>
+              <Route path="/" component={News} exact />
+              <Route path="/news/:id" component={New} exact />
+            </Switch>
+            <Navigation />
+            <Popups />
+          </div>
+        </ThemeProvider>
+      </Context.Provider>
+    </Router>
   );
 }
 
